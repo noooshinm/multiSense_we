@@ -4,8 +4,8 @@ from tensorflow.contrib.tensorboard.plugins import projector
 import os
 
 
-#v1: using gensim table for negative sampling, ignoring wt_dist accuracy: 25%
-#v2: using gensim table for negative sampling, considering wt_dist, accuracy: 37%
+#using gensim table for negative sampling, with/out wt_dist 
+ 
 class MVWEModel():
 
     def __init__(self, batch_size, vocab_size, n_topic, embed_size, n_negSample, beta, wTopic_dist, learnin_rate):
@@ -56,8 +56,6 @@ class MVWEModel():
     def inference(self):
         # shape = [batch_size * n_neg+1 , embed_size]
         self.center_embed = tf.nn.embedding_lookup(self.weight_center, self.X_center, name='center_embed') + self.bias_center
-        #self.context_embed = tf.nn.embedding_lookup(self.weight_context, self.X_context, name='context_embed') + self.bias_context
-
         # v1:
         # self.topic_embed = tf.nn.embedding_lookup(self.weight_topic, self.X_topic, name='topic_embed') + self.bias_topic
 
@@ -81,12 +79,6 @@ class MVWEModel():
 
         true_corrupt_score = tf.reshape(tmp, [self._batchSize, self._nNegSample + 1])
 
-        '''
-        tmp2 = tf.reshape(tmp, [self._batchSize, self._nNegSample+1])
-        tmp3 = tf.reduce_sum(tmp2, axis=1)
-        loss_matrix = tf.maximum(0., 1. - tmp3)
-        loss_batch = tf.reduce_sum(loss_matrix)
-        '''
         activate = tf.sigmoid(true_corrupt_score, name = 'activation')
 
         sign_vec = np.ones(self._nNegSample + 1)
@@ -174,10 +166,6 @@ def train_MVWE(model,n_epochs,batch_generation, wt_indices, skip_step):
                 print ('average loss epoch {0} : {1}'.format(i, total_loss/skip_step))
                 total_loss = 0.0
 
-        # centerEmbed = sess.run(model.normalized_weightCenter)
-        # np.savetxt('/tmp/wikiCenterVec.txt', centerEmbed)
-        # topicEmbed = sess.run(model.normalized_weightTopic)
-        # np.savetxt('/tmp/wikiTopicVec.txt', topicEmbed)
 
         word_indices, topic_indices, _ = wt_indices
         multi_embed = sess.run(model.normalized_word_multi_embed, feed_dict={model.w_indices: word_indices, model.t_indices: topic_indices})
