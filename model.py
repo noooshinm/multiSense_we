@@ -70,7 +70,7 @@ class MVWEModel():
 
         # shape = [batch_size, num_neg_samples]
         loss_matrix = tf.maximum(0., 1. - true_score + corrupted_score)
-        loss_batch = tf.reduce_sum(loss_matrix)  # this gives scalar representing the loss over the batch
+        loss_batch = tf.reduce_sum(loss_matrix)  
 
         regularizer = tf.nn.l2_loss(self.weight_center) + tf.nn.l2_loss(self.weight_context) + tf.nn.l2_loss(self.weight_topic)
         self.loss = tf.reduce_mean(loss_batch + self._beta * regularizer)
