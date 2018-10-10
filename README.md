@@ -1,2 +1,2 @@
 # topical_we
-topical word embedding using tensor fusion
+learning multi sense word embedding using tensor fusion
