@@ -1,5 +1,5 @@
 from collections import Counter
-from preprocessing2 import news_wtPair, news_doclist
+from preprocessing import news_wtPair, news_doclist
 from gensim import models
 import numpy as np
 
