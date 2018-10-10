@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 
 
-#v1: using tensorflow negative sampling softmax, ignoring wt_dist accuracy:
-#v2: using tensorflow negative sampling softmax, with learned_unigram_candidate_sampler, considering wt_dist, accuracy: 27%
+#using tensorflow negative sampling softmax,w/out wt_dist 
+
 
 class MVWEModel():
 
@@ -139,12 +139,7 @@ def train_MVWE(model,n_epochs,batch_generation, wt_indices, skip_step):
                 print 'average loss epoch {0} : {1}'.format(i, total_loss/skip_step)
                 total_loss = 0.0
 
-        # centerEmbed = sess.run(model.normalized_weightCenter)
-        # np.savetxt('/tmp/wikiCenterVec.txt', centerEmbed)
-        # topicEmbed = sess.run(model.normalized_weightTopic)
-        # np.savetxt('/tmp/wikiTopicVec.txt', topicEmbed)
-
+       
         word_indices, topic_indices, _ = wt_indices
         multi_embed = sess.run(model.normalized_word_multi_embed, feed_dict={model.w_indices: word_indices, model.t_indices: topic_indices})
-        #multi_embed = model.normalized_word_multi_embed.eval()
-        np.savetxt('/tmp/newsTrainVec4v2.txt', multi_embed)
+        
