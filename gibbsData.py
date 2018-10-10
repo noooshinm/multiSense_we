@@ -27,13 +27,12 @@ def wiki_length(stream_data):
 def save_wiki(num_docs, stream_corpus, fname):
     dest_file = codecs.open(fname, 'w', encoding='utf-8', errors='ignore')
     dest_file.write(num_docs + '\n')
-    #print>> dest_file, num_docs
     for doc in stream_corpus:
         for w in doc:
             dest_file.write(w+' ')
         dest_file.write('\n')
-            #print>> dest_file, w,
-        #print>> dest_file
+           
+        
     dest_file.close()
 
 
