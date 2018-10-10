@@ -81,11 +81,11 @@ def scws_eval(multiEmb_ifile, centerEmb_ifile, topicEmb_ifile):
 
     wt_pair = scws_wtPair()
     _, _, lookupIndices = get_indices()
-    embed = np.loadtxt(multiEmb_ifile)  #'/tmp/wikiVec.txt'
+    embed = np.loadtxt(multiEmb_ifile)  
     spearman_score = getScore(score, wt_pair, lookupIndices, embed)
 
-    centerVec = np.loadtxt(centerEmb_ifile)  # /tmp/wikiCenterVec.txt
-    topicVec = np.loadtxt(topicEmb_ifile) #/tmp/wikiTopicVec.txt
+    centerVec = np.loadtxt(centerEmb_ifile) 
+    topicVec = np.loadtxt(topicEmb_ifile) 
     word_topic_dist, doc_topic_dist = dt_wt_dist()
     unique_token = get_scws_unqToken()
     avgsim_score, maxsim_score = avgSim_maxSimC(score, centerVec, topicVec, word_topic_dist, doc_topic_dist, wdPair,
