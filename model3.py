@@ -170,7 +170,7 @@ def train_MVWE(model,n_epochs,batch_generation, wt_indices, skip_step):
         word_indices, topic_indices, _ = wt_indices
         multi_embed = sess.run(model.normalized_word_multi_embed, feed_dict={model.w_indices: word_indices, model.t_indices: topic_indices})
 
-        np.savetxt('/tmp/newsTrainVec3v2_ep10000.txt', multi_embed)
+       
 
         '''
         #visualziation
