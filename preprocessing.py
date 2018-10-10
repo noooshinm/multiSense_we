@@ -139,13 +139,13 @@ def load_tokenId_topic(id2word, tokenAssignedTopic, dir, token_fname, tokenId_fn
                     continue
 
                 token = id2word[tokenId]
-                print>> token_file, token,
-                print>> tokenId_file, tokenId,
-                print>> topic_file, topic,
+                token_file.write(token+' ')
+                tokenId_file.write(tokenId+' ')
+                topic_file.write(topic+' ')
 
-            print>> token_file
-            print>>tokenId_file
-            print>> topic_file
+            token_file.write('\n')
+            tokenId_file.write('\n')
+            topic_file.write('\n')
 
         token_file.close()
         tokenId_file.close()
