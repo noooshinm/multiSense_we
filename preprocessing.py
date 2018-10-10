@@ -394,6 +394,11 @@ def news_doclist(tokenId_file):
     input_file.close()
     return docs_list
 
+def news_wtPair(label_ifile, tassign_ifile):
+    news_labels = load_NewsLabel(label_ifile) 
+    doc_wt, labels = load_News_assign(tassign_ifile, news_labels) 
+    return doc_wt, labels
+
 
 
 
