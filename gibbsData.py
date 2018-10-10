@@ -2,7 +2,7 @@ import codecs
 import os
 
 from preprocessing import wikiUtils, UtilNews
-#from preprocessing import wikiUtils, UtilNews, init_scws
+
 
 
 class WikiStream(object):
@@ -93,51 +93,9 @@ def saveNews(labels, dirName, num_docs, dataf, labelf):
 
 
 
-def create_wiki_train(ifile, ofile):
-    stream = WikiStream(ifile) #'/home/nooshin/Downloads/Socher_wiki/WestburyLab.wikicorp.201004.txt'
-    numDocs = wiki_length(stream)
-    save_wiki(numDocs, stream, ofile) #/tmp/wikiGibbs.dat
-
-def create_wiki_test(ofile):
-    dlist, numDocs, _, _, _ = init_scws()
-    save_wiki(numDocs, dlist, ofile) #'/tmp/scwsGibbs.dat'
-
-def create_News_train(rootdir, data_ofile, label_ofile):
-    #rootdir = '/home/nooshin/MVWE_Datasets/20News/20news-bydate-train/'
-    labels, c, n = parse_News(rootdir)
-    saveNews(labels, rootdir, n, data_ofile, label_ofile) #'/tmp/news_train.dat', /tmp/train.label
-
-def create_News_test(rootdir, data_ofile, label_ofile):
-    #rootdir = '/home/nooshin/MVWE_Datasets/20News/20news-bydate-test/'
-    labels, c, n = parse_News(rootdir)
-    saveNews(labels, rootdir, n, data_ofile, label_ofile) #'/tmp/news_test.dat' , '/tmp/test.label'
-
-
-def create_wikiGibbsData(train_ifile, trainGibs, testGibs):
-    create_wiki_train(train_ifile, trainGibs)
-    create_wiki_test(testGibs)
-
-
-def create_NewsGibbsData(tr_dir, tr_data, tr_label, te_dir, te_data, te_label):
-    create_News_train(tr_dir, tr_data, tr_label)
-    create_News_test(te_dir, te_data, te_label)
 
 
 
-#create_wiki_train('/home/nooshin/Downloads/Socher_wiki/WestburyLab.wikicorp.201004.txt','/tmp/wikiGibbs.dat')
-
-#print ('done')
-#create_wikiGibbsData('/home/nooshin/Downloads/Socher_wiki/WestburyLab.wikicorp.201004.txt', '/tmp/wikiGibbs.dat','/tmp/scwsGibbs.dat')
-
-#create_NewsGibbsData('/home/nooshin/MVWE_Datasets/20News/20news-bydate-train/','/tmp/news_train.dat','/tmp/train.label',
-#                         '/home/nooshin/MVWE_Datasets/20News/20news-bydate-test/','/tmp/news_test.dat' , '/tmp/test.label')
 
 
-# s = [['nooshin','mojab'],['hello','happy','positive']]
-# des = open('/tmp/test.txt', 'w')
-# des.write('2'+ '\n')
-# for doc in s:
-#     for w in doc:
-#         des.write(w+' ')
-#     des.write('\n')
-# des.close()
+
