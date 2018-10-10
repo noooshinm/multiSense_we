@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 
-#using softmax neg sampling loss with a test bias , ignoring wordtopic dist , accuracy: 25%
+#using softmax neg sampling loss, ignoring wordtopic dist
 class MVWEModel():
 
     def __init__(self, batch_size, vocab_size, n_topic, embed_size, n_negSample, beta, learning_rate):
@@ -49,8 +49,8 @@ class MVWEModel():
 
     def create_loss(self):
 
-        word_topic = tf.mul(self.center_embed, self.topic_embed)  #inputs=
-        train_labels = tf.reshape(tf.cast(self.X_context, dtype=tf.int64), shape=[self._batchSize, 1]) #labels =
+        word_topic = tf.mul(self.center_embed, self.topic_embed) 
+        train_labels = tf.reshape(tf.cast(self.X_context, dtype=tf.int64), shape=[self._batchSize, 1]) 
         bias_test = tf.Variable(tf.zeros([self._vocabSize]), name='test_bias')
 
         loss_batch = tf.reduce_mean(
@@ -106,12 +106,8 @@ def train_MVWE(model,n_epochs,batch_generation, wt_indices, skip_step):
                 print 'average loss epoch {0} : {1}'.format(i, total_loss/skip_step)
                 total_loss = 0.0
 
-        # centerEmbed = sess.run(model.normalized_weightCenter)
-        # np.savetxt('/tmp/wikiCenterVec.txt', centerEmbed)
-        # topicEmbed = sess.run(model.normalized_weightTopic)
-        # np.savetxt('/tmp/wikiTopicVec.txt', topicEmbed)
+        
 
         word_indices, topic_indices, _ = wt_indices
         multi_embed = sess.run(model.normalized_word_multi_embed, feed_dict={model.w_indices: word_indices, model.t_indices: topic_indices})
-        #multi_embed = model.normalized_word_multi_embed.eval()
         np.savetxt('/tmp/newsTrainVec.txt', multi_embed)
