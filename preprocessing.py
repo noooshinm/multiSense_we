@@ -14,7 +14,7 @@ from gensim.parsing.preprocessing import STOPWORDS
 from gensim.corpora.wikicorpus import filter_wiki
 
 
-#classes to be used for processing the wikipedia dataset and 20NewsGroup make it in the format accepatable by Gibbs
+#processing wikipedia and 20NewsGroup in Gibbs format
 class wikiUtils(object):
 
     def tokenize(self, doc):
@@ -24,17 +24,13 @@ class wikiUtils(object):
 
     def remove_punc(self, doc):
         table = str.maketrans('', '', string.punctuation)
-        punc_rmv = doc.translate(table)
-        # table = string.maketrans("", "")
-        # punc_rmv = doc.translate(table, string.punctuation)
+        punc_rmv = doc.translate(table)       
         return punc_rmv
 
     def remove_digits(self, doc):
         digist = '0123456789'
         table = str.maketrans('', '', digist)
         dig_rmv = doc.translate(table)
-        # table = string.maketrans("", "")
-        # dig_rmv = doc.translate(table, digist)
         return dig_rmv
 
     def process_wiki(self, doc):
@@ -77,17 +73,13 @@ class UtilNews():
     def remove_punctuation(self, msg):
         table = str.maketrans('', '', string.punctuation)
         refined_msg = msg.translate(table)
-        # table = string.maketrans("", "")
-        # refined_msg = msg.translate(table, string.punctuation)
-        return refined_msg
+      return refined_msg
 
     def remove_digits(self, msg):
         digist = '0123456789'
         table = str.maketrans('', '', digist)
         noDigit_msg = msg.translate(table)
-        # table = string.maketrans("", "")
-        # noDigit_msg = msg.translate(table, digist)
-        return noDigit_msg
+      return noDigit_msg
 
     def tokenize(self, msg):
         doc = msg.lower().strip().split()
@@ -107,7 +99,7 @@ class UtilNews():
 
 
 
-###after performing gibbsSampling, load the wordmap, tassign , phi and theta
+###after performing gibbsSampling, load wordmap, tassign , phi and theta
 
 #load wordmap
 def load_wordmap(wordmap):
@@ -160,7 +152,7 @@ def load_tokenId_topic(id2word, tokenAssignedTopic, dir, token_fname, tokenId_fn
         topic_file.close()
 
 
-#load word-topic distribution file (phi), where rows are topics and columns are words and save it as numpy array where rows are words and columns are topics
+#load word-topic distribution file (phi), where rows are topics and columns are words
 def load_wordTopicDist(word_topic_file):
     word_topic_input = open(word_topic_file)
     wt_list = []
@@ -170,7 +162,7 @@ def load_wordTopicDist(word_topic_file):
     word_topic_dist = np.transpose(np.asarray(wt_list , dtype=np.float32))
     return word_topic_dist
 
-#load doc-topic distribution file (theta) and save it as numpy array where rows are documents and columns are topics
+#load doc-topic distribution file (theta) 
 def load_doc_topic_dist(doc_topic_file):
     doc_topic_input = open(doc_topic_file)
     dt_list = []
@@ -181,8 +173,8 @@ def load_doc_topic_dist(doc_topic_file):
     return doc_topic_dist
 
 
-# create lists of token Ids and topics (they are used in generating training sample, creating index for
-    # multiSensed word embedding and create unique tokens for scws)
+# create lists of token Ids and topics (used in generating training sample, creating index for
+    # multiSensed word embedding and unique tokens for scws)
 def token_topic_list(tokeId_file, topic_file):
     tokenId_list = []
     topic_list = []
@@ -221,7 +213,7 @@ def multiSens_indices (word_multi_senses):
     return word_indices, topic_indices, indices_tuples
 
 
-#creating list of frequency of wordIds (for wordIds in wordmap in the same order)
+#get frequency of wordIds 
 def word_unigram (tokenId_file, id2word):
     with open(tokenId_file) as f:
         input_string = tf.compat.as_str(f.read())
@@ -233,8 +225,6 @@ def word_unigram (tokenId_file, id2word):
     for i in id2word.keys():
         list_unigram.append(token_frequency[str(i)])
     return list_unigram
-
-
 
 def build_training_samples (indexed_corpus,topic_file, window_size):
     for index, center in enumerate(indexed_corpus):
@@ -261,10 +251,10 @@ def get_batch(training_samples, batch_size):
 
 
 
-###data preprocessing of scws dataset for evaluation phase,
+###data preprocessing of scws dataset 
 
 def parse_scws(input_file, vocabulary):
-    # get the vocabulary with words as keys
+    
     indexed_vocab = dict(zip(vocabulary.values(), vocabulary.keys()))
     doc_list = []
     word_pairs = []
@@ -318,14 +308,14 @@ def parse_scws(input_file, vocabulary):
 
 
 
-#make a sorted list of unique token Ids in scws data set. (to use its index to get the corresponding row in word_topic  distribution for scws data set)
+#get a sorted list of unique token Ids in scws dataset
 def scws_token_list (tokenList):
     unique_tokens = map(int, set(tokenList))
     unique_tokens.sort()
     return unique_tokens
 
 
-#load word_topic assignment for scws data to get the pair of words to be compared with their corresponding topic, so we get ((w1,t1),(w2,t2))
+#load word_topic assignment for scws data  ((w1,t1),(w2,t2))
 def get_scws_wtPair(file_name):
     input_file = open(file_name, 'r')
     all_pairs = []
@@ -337,15 +327,13 @@ def get_scws_wtPair(file_name):
         wt = (int(w),int(t))
         all_pairs.append(wt)
 
-    #return all_pairs
-
     j = 0
     for i in range(len(all_pairs)/2):
         p = (all_pairs[j],all_pairs[j+1])
         wt_pairs.append(p)
         j+=2
 
-    ##alternative approach
+  
     '''
     wt_1 = []
     wt_2 = []
@@ -365,7 +353,7 @@ def get_scws_wtPair(file_name):
     return wt_pairs
 
 
-###parsing 20news dataset, to get a list of labels, list of word-topic pair for each document and list of tokenIds for each document
+###parsing 20news dataset
 def load_NewsLabel(input_file):
     labels = []
     with open(input_file) as fi:
@@ -387,7 +375,7 @@ def load_News_assign(input_file, labels):
                 wt_pair = (int(w), int(t))
                 dwt.append(wt_pair)
 
-            #wd_pair.append([labels[i]]+dwt)
+            
             wd_pair.append(dwt)
     return wd_pair, labels
 
@@ -408,60 +396,10 @@ def news_doclist(tokenId_file):
 
 
 
-'''
-word2id = load_wordmap('/tmp/wordmap.txt')
-load_tokenId_topic(word2id, '/tmp/model-final.tassign', '/tmp/', 'trainToken.file', 'trainTokenId.file', 'traintTopic.file')
-tokenList, topicList = token_topic_list('/tmp/trainTokenId.file', '/tmp/trainTopic.file')
-'''
-###training phase for both dataset (the file names are the same for both dataset in training phase)
-def batch_gen(batch_size, window_size):
-    training_samples = build_training_samples(tokenList, topicList, window_size)
-    return (get_batch(training_samples, batch_size))
 
 
 
 
-def unigram_counts ():
-    unigrams = word_unigram('/tmp/trainTokenId.file', word2id) #/tmp/tokenId.file
-    return unigrams
-
-def word_topic_dist():
-    word_topic_distribution = load_wordTopicDist('/tmp/model-final.phi') #/tmp/model-final.phi #model-01800.phi
-    return word_topic_distribution
-
-def get_indices():
-    w_senses = get_word_multiSenses(tokenList,topicList)
-    return (multiSens_indices(w_senses))
-
-
-###test dataset (scws)
-def init_scws():
-    dlist, wordPair, _, score, wdPair = parse_scws('/home/nooshin/Downloads/Socher_wiki/SCWS/ratings.txt', word2id)
-    numDocs = str(len(dlist))
-    return dlist, numDocs, wordPair, score, wdPair
-
-def scws_wtPair():
-    wt_p = get_scws_wtPair('/tmp/scws_gibbs2.dat.tassign') #/tmp/scws_gibbs2.dat.tassign #/home/nooshin/Downloads/GibbsLDA++-0.2/models/casestudy/newdocs.dat.tassign
-    return wt_p
-
-def dt_wt_dist():
-    scws_wt_dist = load_wordTopicDist('/tmp/scws_gibbs2.dat.phi')
-    scws_dt_dist = load_doc_topic_dist('/tmp/scws_gibbs2.dat.theta')
-    return scws_wt_dist, scws_dt_dist
-
-def get_scws_unqToken():
-    load_tokenId_topic(word2id, '/tmp/scws_gibbs2.dat.tassign', 'scws_token.file', 'scws_tokenId.file','scws_topic.file' )  # /tmp/model-final.tassign #model-01800.tassign
-    scws_tokens, _ = token_topic_list('/tmp/scws_tokenId.file','/tmp/scws_topic.file')
-    scws_unq_tokenList = scws_token_list(scws_tokens)
-    return scws_unq_tokenList
-
-
-###test dataset (20NewsGroup)
-#get the labels and word-topic pair for document with non-zero length in 20News test dataset (its used in libData.py)
-def news_wtPair(label_ifile, tassign_ifile):
-    news_labels = load_NewsLabel(label_ifile) #/tmp/test.label, /tmp/train.label
-    doc_wt, labels = load_News_assign(tassign_ifile, news_labels) #'/tmp/news_test.dat.tassign'  #/tmp/model-final.tassign
-    return doc_wt, labels
 
 
 
