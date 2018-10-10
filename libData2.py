@@ -4,6 +4,7 @@ from gensim import models
 import numpy as np
 
 
+
 #in each document obtain frequency of each word in that document , example: s = [[1000,2000,3000,2000],[400,1000,500]]
     # return: [[(1000, 1), (2000, 2), (3000, 1)], [(400, 1), (1000, 1), (500, 1)]]
 
@@ -16,7 +17,7 @@ def docs_tf(doclist):
         corpus_tf.append(tf.items())
     return corpus_tf
 
-#returns [[(2000, 0.8944271909999159), (3000, 0.4472135954999579)], [(400, 0.7071067811865475), (500, 0.7071067811865475)]]
+
 def docs_tfidf(corpus):
     tfidf = models.TfidfModel(corpus)
     return [tfidf[corpus[i]] for i in range(len(corpus))]
@@ -53,33 +54,11 @@ def generate_doc2vec(wt_pairs, labels, tuple_indices, word_embedings, tfidf_docs
         doc_embed = doc_embed / doc_length
         doc2vec.append(np.concatenate(([labels[i]], doc_embed), axis=0))
     return doc2vec, nodoc
-
-
-def doc2vec(gensim_vocab, wtIndices, trainVec_ofile, testVec_ofile):
-    train_list = news_doclist(gensim_vocab, '/tmp/trainToken.file')
-    train_tf_corpus = docs_tf(train_list)
-    train_tfidf = docs_tfidf(train_tf_corpus)
-    train_wtPair, train_label = news_wtPair(gensim_vocab, '/tmp/train.label', '/tmp/trainTokenTopic.file')
-
-    test_list = news_doclist(gensim_vocab, '/tmp/testToken.file')
-    test_tf_corpus = docs_tf(test_list)
-    test_tfidf = docs_tfidf(test_tf_corpus)
-    test_wtPair, test_label = news_wtPair(gensim_vocab, '/tmp/test.label', '/tmp/testTokenTopic.file')
-
-    embed = np.loadtxt('/tmp/newsTrainVec.txt')
-
-    trainDocs_embed, train_missDoc = generate_doc2vec(train_wtPair, train_label, wtIndices, embed, train_tfidf)
-    trainDocs_embed_ar = np.asarray(trainDocs_embed)
-    np.savetxt(trainVec_ofile, trainDocs_embed_ar)
-    print 'News train vectors saved'
-
-    testDocs_embed, test_missDoc = generate_doc2vec(test_wtPair, test_label, wtIndices, embed, test_tfidf)
-    testDocs_embed_ar = np.asarray(testDocs_embed)
-    np.savetxt(testVec_ofile, testDocs_embed_ar)
-    print 'News test vectors saved'
-
+''''
+generate the file format for liblinear classifier  
+'''
 def lib_inputFormat(newsEmbed_ifile, lib_ofile):
-    newsEmbeding = np.loadtxt(newsEmbed_ifile)  # /tmp/newsTestEmbed.txt ,/tmp/newsTrainEmbed.txt'
+    newsEmbeding = np.loadtxt(newsEmbed_ifile)  
     index = range(1, newsEmbeding.shape[1])
     indexed_docs = []
     for doc in newsEmbeding:
@@ -91,8 +70,3 @@ def lib_inputFormat(newsEmbed_ifile, lib_ofile):
     indexedDoc_ar = np.asarray(indexed_docs)
     np.savetxt(lib_ofile, indexedDoc_ar, fmt="%s")  # /tmp/libTest.t, /tmp/libTrain
 
-def create_libData(gensim_vocab, wtIndices):
-    doc2vec(gensim_vocab, wtIndices, '/tmp/newsTrainEmbed.txt', '/tmp/newsTestEmbed.txt')
-    lib_inputFormat('/tmp/newsTrainEmbed.txt','/tmp/libTrain')
-    lib_inputFormat('/tmp/newsTestEmbed.txt', '/tmp/libTest.t')
-    print 'lib files created'
